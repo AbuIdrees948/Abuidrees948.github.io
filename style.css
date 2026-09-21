@@ -881,3 +881,30 @@ footer p {
 .disabled-link:hover {
     color: var(--purple-light);
 }
+
+/* Project Gallery */
+.project-gallery {
+    height: 280px;
+    position: relative;
+    overflow: hidden;
+    background: #111116;
+    border-bottom: 1px solid var(--border);
+}
+
+.project-gallery img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.gallery-label {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+}

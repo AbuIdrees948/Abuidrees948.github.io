@@ -68,3 +68,57 @@ if (footerYear) {
     footerYear.innerHTML =
         `© ${new Date().getFullYear()} Ibraheem Idrees. All rights reserved.`;
 }
+
+
+// School Project Gallery
+const schoolImages = [
+    {
+        src: "images/home.png",
+        alt: "Next Level School homepage"
+    },
+    {
+        src: "images/contact.png",
+        alt: "Next Level School contact page"
+    },
+    {
+        src: "images/dashboard.png",
+        alt: "Next Level School dashboard"
+    },
+    {
+        src: "images/ai.png",
+        alt: "Next Level School AI page"
+    }
+];
+
+let currentSchoolImage = 0;
+
+function showSchoolImage(index) {
+    currentSchoolImage = index;
+
+    const image = document.getElementById("schoolProjectImage");
+    const counter = document.getElementById("galleryCounter");
+
+    image.src = schoolImages[currentSchoolImage].src;
+    image.alt = schoolImages[currentSchoolImage].alt;
+
+    counter.textContent =
+        `${currentSchoolImage + 1} / ${schoolImages.length}`;
+}
+
+function nextSchoolImage() {
+    currentSchoolImage =
+        (currentSchoolImage + 1) % schoolImages.length;
+
+    showSchoolImage(currentSchoolImage);
+}
+
+function previousSchoolImage() {
+    currentSchoolImage =
+        (currentSchoolImage - 1 + schoolImages.length) %
+        schoolImages.length;
+
+    showSchoolImage(currentSchoolImage);
+}
+
+// Automatically change image every 4 seconds
+setInterval(nextSchoolImage, 4000);
