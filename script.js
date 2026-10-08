@@ -1,6 +1,4 @@
-// ================================
 // SCROLL REVEAL ANIMATION
-// ================================
 
 const sections = document.querySelectorAll(".section");
 const projectCards = document.querySelectorAll(".project-card");
@@ -26,41 +24,31 @@ sections.forEach((section) => {
 
 projectCards.forEach((card, index) => {
     card.classList.add("hidden");
-
     card.style.transitionDelay = `${index * 0.1}s`;
-
     observer.observe(card);
 });
 
 skillCards.forEach((card, index) => {
     card.classList.add("hidden");
-
     card.style.transitionDelay = `${index * 0.1}s`;
-
     observer.observe(card);
 });
 
 
-// ================================
 // NAVBAR SCROLL EFFECT
-// ================================
 
 const navbar = document.querySelector(".navbar");
 
 window.addEventListener("scroll", () => {
-
     if (window.scrollY > 50) {
         navbar.classList.add("scrolled");
     } else {
         navbar.classList.remove("scrolled");
     }
-
 });
 
 
-// ================================
 // CURRENT YEAR
-// ================================
 
 const footerYear = document.querySelector("footer p");
 
@@ -70,7 +58,8 @@ if (footerYear) {
 }
 
 
-// School Project Gallery
+// SCHOOL PROJECT GALLERY
+
 const schoolImages = [
     {
         src: "images/home.png",
@@ -98,6 +87,10 @@ function showSchoolImage(index) {
     const image = document.getElementById("schoolProjectImage");
     const counter = document.getElementById("galleryCounter");
 
+    if (!image || !counter) {
+        return;
+    }
+
     image.src = schoolImages[currentSchoolImage].src;
     image.alt = schoolImages[currentSchoolImage].alt;
 
@@ -120,5 +113,7 @@ function previousSchoolImage() {
     showSchoolImage(currentSchoolImage);
 }
 
-// Automatically change image every 4 seconds
+
+// AUTOMATICALLY CHANGE SCHOOL PROJECT IMAGE
+
 setInterval(nextSchoolImage, 4000);
