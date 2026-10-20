@@ -1,64 +1,104 @@
-// SCROLL REVEAL ANIMATION
 
-const sections = document.querySelectorAll(".section");
-const projectCards = document.querySelectorAll(".project-card");
-const skillCards = document.querySelectorAll(".skill-card");
+"use strict";
 
-const observer = new IntersectionObserver(
-    (entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add("show");
-            }
-        });
-    },
-    {
-        threshold: 0.15
-    }
+// ========================================
+// IBRAHEEM IDREES — PORTFOLIO INTERACTIONS
+// ========================================
+
+
+// 1. SCROLL REVEAL ANIMATIONS
+
+const revealElements = document.querySelectorAll(
+    ".section, .project-card, .skill-card"
 );
 
-sections.forEach((section) => {
-    section.classList.add("hidden");
-    observer.observe(section);
-});
+if ("IntersectionObserver" in window) {
+    const revealObserver = new IntersectionObserver(
+        (entries, observer) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("show");
+                    observer.unobserve(entry.target);
+                }
+            });
+        },
+        {
+            threshold: 0.12,
+            rootMargin: "0px 0px -30px 0px"
+        }
+    );
 
-projectCards.forEach((card, index) => {
-    card.classList.add("hidden");
-    card.style.transitionDelay = `${index * 0.1}s`;
-    observer.observe(card);
-});
+    revealElements.forEach((element, index) => {
+        element.classList.add("hidden");
 
-skillCards.forEach((card, index) => {
-    card.classList.add("hidden");
-    card.style.transitionDelay = `${index * 0.1}s`;
-    observer.observe(card);
-});
+        if (
+            element.classList.contains("project-card") ||
+            element.classList.contains("skill-card")
+        ) {
+            element.style.transitionDelay = `${(index % 4) * 0.08}s`;
+        }
 
-
-// NAVBAR SCROLL EFFECT
-
-const navbar = document.querySelector(".navbar");
-
-window.addEventListener("scroll", () => {
-    if (window.scrollY > 50) {
-        navbar.classList.add("scrolled");
-    } else {
-        navbar.classList.remove("scrolled");
-    }
-});
-
-
-// CURRENT YEAR
-
-const footerYear = document.querySelector("footer p");
-
-if (footerYear) {
-    footerYear.innerHTML =
-        `© ${new Date().getFullYear()} Ibraheem Idrees. All rights reserved.`;
+        revealObserver.observe(element);
+    });
+} else {
+    revealElements.forEach((element) => {
+        element.classList.add("show");
+    });
 }
 
 
-// SCHOOL PROJECT GALLERY
+// 2. NAVBAR SCROLL EFFECT
+
+const navbar = document.querySelector(".navbar");
+
+function updateNavbar() {
+    if (!navbar) return;
+
+    navbar.classList.toggle("scrolled", window.scrollY > 30);
+}
+
+window.addEventListener("scroll", updateNavbar, {
+    passive: true
+});
+
+updateNavbar();
+
+
+// 3. CLOSE MOBILE NAVIGATION AFTER CLICKING A LINK
+
+const navigationLinks = document.querySelectorAll(
+    ".navbar nav a, .nav-links a"
+);
+
+navigationLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+        const nav = link.closest("nav");
+
+        if (nav) {
+            nav.classList.remove("active");
+        }
+
+        if (navbar) {
+            navbar.classList.remove("menu-open");
+        }
+    });
+});
+
+
+// 4. CURRENT YEAR IN FOOTER
+
+const footer = document.querySelector("footer");
+
+if (footer) {
+    const yearElement = footer.querySelector("[data-year]");
+
+    if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
+    }
+}
+
+
+// 5. NEXT LEVEL SCHOOL PROJECT IMAGE GALLERY
 
 const schoolImages = [
     {
@@ -80,16 +120,16 @@ const schoolImages = [
 ];
 
 let currentSchoolImage = 0;
+let galleryTimer = null;
 
 function showSchoolImage(index) {
-    currentSchoolImage = index;
-
     const image = document.getElementById("schoolProjectImage");
     const counter = document.getElementById("galleryCounter");
 
-    if (!image || !counter) {
-        return;
-    }
+    if (!image || !counter) return;
+
+    currentSchoolImage =
+        (index + schoolImages.length) % schoolImages.length;
 
     image.src = schoolImages[currentSchoolImage].src;
     image.alt = schoolImages[currentSchoolImage].alt;
@@ -99,21 +139,74 @@ function showSchoolImage(index) {
 }
 
 function nextSchoolImage() {
-    currentSchoolImage =
-        (currentSchoolImage + 1) % schoolImages.length;
-
-    showSchoolImage(currentSchoolImage);
+    showSchoolImage(currentSchoolImage + 1);
 }
 
 function previousSchoolImage() {
-    currentSchoolImage =
-        (currentSchoolImage - 1 + schoolImages.length) %
-        schoolImages.length;
+    showSchoolImage(currentSchoolImage - 1);
+}
 
-    showSchoolImage(currentSchoolImage);
+function startSchoolGallery() {
+    if (galleryTimer) {
+        clearInterval(galleryTimer);
+    }
+
+    const image = document.getElementById("schoolProjectImage");
+
+    if (!image) return;
+
+    galleryTimer = setInterval(() => {
+        // Pause automatic changes while the browser tab is hidden.
+        if (!document.hidden) {
+            nextSchoolImage();
+        }
+    }, 4000);
+}
+
+function stopSchoolGallery() {
+    if (galleryTimer) {
+        clearInterval(galleryTimer);
+        galleryTimer = null;
+    }
+}
+
+if (document.getElementById("schoolProjectImage")) {
+    showSchoolImage(0);
+    startSchoolGallery();
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+            stopSchoolGallery();
+        } else {
+            startSchoolGallery();
+        }
+    });
 }
 
 
-// AUTOMATICALLY CHANGE SCHOOL PROJECT IMAGE
+// 6. MAKE GALLERY FUNCTIONS AVAILABLE TO HTML BUTTONS
 
-setInterval(nextSchoolImage, 4000);
+window.nextSchoolImage = nextSchoolImage;
+window.previousSchoolImage = previousSchoolImage;
+
+
+// 7. SMOOTH SCROLL FOR INTERNAL LINKS
+
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+        const targetId = link.getAttribute("href");
+
+        if (!targetId || targetId === "#") return;
+
+        const target = document.querySelector(targetId);
+
+        if (target) {
+            event.preventDefault();
+
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+    });
+});
