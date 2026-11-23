@@ -2540,3 +2540,14 @@ section[id] {
     background: #22bf5b !important;
     transform: translateY(-2px);
 }
+
+
+
+/* REACT TECHNOLOGY ICON */
+
+.skill-react {
+    color: #61DAFB;
+    background: rgba(97, 218, 251, 0.12);
+    border: 1px solid rgba(97, 218, 251, 0.25);
+    font-size: 32px;
+}
